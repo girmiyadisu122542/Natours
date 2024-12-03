@@ -143,6 +143,14 @@ tourSchema.pre('save', function (next) {
 
 //QUERY MIDDLEWARE 
 
+// populate refrenced documents 
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt'
+  });
+  next();
+});
 // tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secrteTour: { $ne: true } })
@@ -150,11 +158,12 @@ tourSchema.pre(/^find/, function (next) {
   next();
 })
 
-// tourSchema.post(/^find/, function (docs, next) {
-//   console.log(`query took ${Date.now() - this.start} milliseconds`);
-//   // console.log(docs);
-//   next();
-// })
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`query took ${Date.now() - this.start} milliseconds`);
+  // console.log(docs);
+  next();
+})
 
 //AGGEREGATE MIDDLEWARE
 
